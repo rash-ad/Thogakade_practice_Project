@@ -13,35 +13,35 @@
 <AnchorPane prefHeight="576.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerFormController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="50.0" layoutX="13.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" width="688.0" />
-      <Label alignment="CENTER" layoutX="70.0" layoutY="9.0" prefHeight="42.0" prefWidth="578.0" text="Customer Form">
+      <Label alignment="CENTER" layoutX="70.0" layoutY="9.0" prefHeight="42.0" prefWidth="578.0" text="Customer Form" textFill="WHITE">
          <font>
-            <Font size="22.0" />
+            <Font name="System Bold" size="22.0" />
          </font>
       </Label>
-      <JFXTextField layoutX="35.0" layoutY="110.0" promptText="ID" />
-      <JFXTextField layoutX="533.0" layoutY="167.0" promptText="Province" />
-      <JFXTextField layoutX="24.0" layoutY="173.0" promptText="Salary" />
-      <JFXTextField layoutX="372.0" layoutY="167.0" promptText="City" />
-      <JFXTextField layoutX="213.0" layoutY="110.0" promptText="Name" />
-      <JFXTextField layoutX="533.0" layoutY="109.0" promptText="Address" />
-      <JFXTextField layoutX="372.0" layoutY="110.0" promptText="Title" />
-      <Button layoutX="455.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="119.0" style="-fx-background-color: green;" text="Add Customer" textFill="WHITE">
+      <JFXTextField fx:id="txtId" layoutX="35.0" layoutY="110.0" promptText="ID" />
+      <JFXTextField fx:id="txtProvince" layoutX="533.0" layoutY="167.0" promptText="Province" />
+      <JFXTextField fx:id="txtrSalary" layoutX="24.0" layoutY="173.0" promptText="Salary" />
+      <JFXTextField fx:id="txtCity" layoutX="372.0" layoutY="167.0" promptText="City" />
+      <JFXTextField fx:id="txtName" layoutX="213.0" layoutY="110.0" promptText="Name" />
+      <JFXTextField fx:id="txtAddress" layoutX="533.0" layoutY="109.0" promptText="Address" />
+      <JFXTextField fx:id="txtTitle" layoutX="372.0" layoutY="110.0" promptText="Title" />
+      <Button fx:id="btnAddCustomer" layoutX="455.0" layoutY="265.0" mnemonicParsing="false" onAction="#btnAddCustomer" prefHeight="25.0" prefWidth="119.0" style="-fx-background-color: green;" text="Add Customer" textFill="WHITE">
          <font>
             <Font name="Berlin Sans FB" size="12.0" />
          </font></Button>
-      <DatePicker layoutX="184.0" layoutY="173.0" promptText="DOB" />
+      <DatePicker fx:id="DateDOB" layoutX="184.0" layoutY="173.0" promptText="DOB" />
       <TableView layoutX="24.0" layoutY="327.0" prefHeight="200.0" prefWidth="688.0">
         <columns>
-          <TableColumn prefWidth="76.0" text="ID" />
-          <TableColumn prefWidth="113.0" text="Name" />
-            <TableColumn prefWidth="109.0" text="Address" />
-            <TableColumn prefWidth="100.0" text="DOB" />
-            <TableColumn prefWidth="101.0" text="Salary" />
-            <TableColumn prefWidth="78.0" text="City" />
-            <TableColumn prefWidth="108.0" text="Province" />
+          <TableColumn fx:id="ColId" prefWidth="76.0" text="ID" />
+          <TableColumn fx:id="ColName" prefWidth="113.0" text="Name" />
+            <TableColumn fx:id="ColAddress" prefWidth="109.0" text="Address" />
+            <TableColumn fx:id="ColDOB" prefWidth="100.0" text="DOB" />
+            <TableColumn fx:id="ColSalary" prefWidth="101.0" text="Salary" />
+            <TableColumn fx:id="ColSalary" prefWidth="78.0" text="City" />
+            <TableColumn fx:id="ColProvince" prefWidth="108.0" text="Province" />
         </columns>
       </TableView>
-      <Button alignment="CENTER" layoutX="593.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" style="-fx-background-color: orange;" text="Reload" textFill="#fffbfb">
+      <Button fx:id="btnREload" alignment="CENTER" layoutX="593.0" layoutY="265.0" mnemonicParsing="false" onAction="#btnReload" prefHeight="25.0" prefWidth="99.0" style="-fx-background-color: orange;" text="Reload" textFill="#fffbfb">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
