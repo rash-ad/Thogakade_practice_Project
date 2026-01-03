@@ -1,4 +1,4 @@
-package model;
+package model.TM;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,23 +10,24 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @ToString
-public class Customer {
+public class CustomerTM {
     private String id;
     private String name;
     private String address;
-    private Date DOB;
-    private Double Salary;
+    private Date dob;
+    private Double salary;
     private String city;
     private String province;
+    private String postalCode;
 
 
-    public Customer(String id,String title,String name, String postalCode,String address, Date DOB, Double Salary, String city, String province) {
+    public CustomerTM(String id, String title, String name, String postalCode, String address, Date dob, Double salary, String city, String province) {
         this.id=id;
         this.name =title+":"+name;
         this.address=address;
-        this.DOB=DOB;
-        this.Salary=Salary;
-        this.city=city+" : "+postalCode;
+        this.dob=dob;
+        this.salary=salary;
+        this.city=city+" : "+this.postalCode;
         this.province=province;
 
         

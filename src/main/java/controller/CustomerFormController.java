@@ -6,8 +6,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
-
+import javafx.scene.control.cell.PropertyValueFactory;
+import model.TM.CustomerTM;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class CustomerFormController {
 
@@ -68,15 +70,40 @@ public class CustomerFormController {
     void btnReload(ActionEvent event) {
         loadTable();
     }
-    private void loadTable(){
+
+    private void loadTable() {
+        ColId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        ColName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        ColAddress.setCellValueFactory(new PropertyValueFactory<>("Address"));
+        ColDOB.setCellValueFactory(new PropertyValueFactory<>("DOB"));
+        ColSalary.setCellValueFactory(new PropertyValueFactory<>("Salary"));
+        Col
+        ColProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
+        ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
+
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade","root","rashpro");
-            System.out.println("Connection "+connection);
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "rashpro");
+            System.out.println("Connection " + connection);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from customer");
+
             System.out.println(resultSet);
-            while(resultSet.next()){
-                System.out.println(resultSet.getString(1));
+            while (resultSet.next()) {
+                customerArrayList.add(
+                        new CustomerTM(
+                                resultSet.getString(1),
+                                resultSet.getString(2),
+                                resultSet.getString(3),
+                                resultSet.getDate(6),
+                                resultSet.getDouble(4),
+                                resultSet.getString(5),
+                                resultSet.getString(7),
+                                resultSet.getString(9)
+
+
+                        )
+                );
+                // System.out.println(resultSet.getString(1));
 
 
             }
@@ -84,6 +111,7 @@ public class CustomerFormController {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
 
+
+    }
 }
