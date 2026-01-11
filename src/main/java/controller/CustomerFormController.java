@@ -1,11 +1,14 @@
 package controller;
 
 import com.jfoenix.controls.JFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.TM.CustomerTM;
 import java.sql.*;
@@ -14,31 +17,41 @@ import java.util.ArrayList;
 public class CustomerFormController {
 
     @FXML
-    private TableColumn<?, ?> ColAddress;
+    public TableColumn<?, ?> colDob;
+
+    public TableView tableCustomer;
+    @FXML
+    private TableColumn<?, ?> colAddress;
+    @FXML
+    private TableColumn<?, ?> colPostalCode;
+
+
 
     @FXML
-    private TableColumn<?, ?> ColDOB;
+    private TableColumn<?, ?> colId;
 
     @FXML
-    private TableColumn<?, ?> ColId;
+    private TableColumn<?, ?> colName;
 
     @FXML
-    private TableColumn<?, ?> ColName;
+    private TableColumn<?, ?> colProvince;
 
     @FXML
-    private TableColumn<?, ?> ColProvince;
+    private TableColumn<?, ?> colTitle;
 
     @FXML
-    private TableColumn<?, ?> ColSalary;
+    private TableColumn<?, ?> colSalary;
+    @FXML
+    private TableColumn<?, ?> colCity;
 
     @FXML
-    private DatePicker DateDOB;
+    private DatePicker dateDOB;
 
     @FXML
     private Button btnAddCustomer;
 
     @FXML
-    private Button btnREload;
+    private Button btnReload;
 
     @FXML
     private JFXTextField txtAddress;
@@ -59,7 +72,7 @@ public class CustomerFormController {
     private JFXTextField txtTitle;
 
     @FXML
-    private JFXTextField txtrSalary;
+    private JFXTextField txtSalary;
 
     @FXML
     void btnAddCustomer(ActionEvent event) {
@@ -72,13 +85,15 @@ public class CustomerFormController {
     }
 
     private void loadTable() {
-        ColId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        ColName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        ColAddress.setCellValueFactory(new PropertyValueFactory<>("Address"));
-        ColDOB.setCellValueFactory(new PropertyValueFactory<>("DOB"));
-        ColSalary.setCellValueFactory(new PropertyValueFactory<>("Salary"));
-        Col
-        ColProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colDob.setCellValueFactory(new PropertyValueFactory<>("dob"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("Address"));
+        colSalary.setCellValueFactory(new PropertyValueFactory<>("Salary"));
+        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
+        colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
+        colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
 
         try {
@@ -94,17 +109,17 @@ public class CustomerFormController {
                                 resultSet.getString(1),
                                 resultSet.getString(2),
                                 resultSet.getString(3),
-                                resultSet.getDate(6),
-                                resultSet.getDouble(4),
-                                resultSet.getString(5),
+                                resultSet.getString(6),
+                                resultSet.getDate(4),
+                                resultSet.getDouble(5),
                                 resultSet.getString(7),
+                                resultSet.getString(8),
                                 resultSet.getString(9)
 
 
                         )
                 );
-                // System.out.println(resultSet.getString(1));
-
+                tableCustomer.setItems(FXCollections.observableList(customerArrayList));
 
             }
 
