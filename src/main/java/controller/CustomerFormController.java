@@ -1,5 +1,6 @@
 package controller;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.collections.FXCollections;
@@ -7,19 +8,29 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import model.TM.Customer;
 
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
-public class CustomerFormController  {
+public class CustomerFormController implements Initializable  {
+    @FXML
+    private JFXButton btnAddCustomer;
 
+    @FXML
+    private JFXButton btnDelete;
+
+    @FXML
+    private JFXButton btnReload;
+
+    @FXML
+    private JFXButton btnSearch;
     @FXML
     private JFXComboBox cmbTitle;
 
@@ -77,7 +88,47 @@ public class CustomerFormController  {
     @FXML
     void btnAddCustomerOnAction(ActionEvent event) {
 
+        String id = txtId.getText();
+        String title = cmbTitle.getValue().toString();
+        String name = txtName.getText();
+        LocalDate dob = dateDob.getValue();
+        Double salary = Double.parseDouble(txtSalary.getText());
+        String address = txtAddress.getText();
+        String city = txtCity.getText();
+        String province = txtProvince.getText();
+        String postalCode = txtPostalCode.getText();
+        Customer customer = new Customer(id, name,title, dob, salary,address, city, province, postalCode);
+        System.out.println(customer);
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "rashpro");
+            System.out.println("Connection " + connection);
+            PreparedStatement psTm = connection.prepareStatement("Insert into customer values (?,?,?,?,?,?,?,?,?) ");
+            psTm.setString(1,customer.getId());
+            psTm.setString(2,customer.getTitle());
+            psTm.setString(3,customer.getName());
+            psTm.setObject(4,customer.getDob());
+            psTm.setDouble(5,customer.getSalary());
+            psTm.setString(6,customer.getAddress());
+            psTm.setString(7,customer.getCity());
+            psTm.setString(8,customer.getProvince());
+            psTm.setString(9,customer.getPostalCode());
+
+
+            if (psTm.executeUpdate()>0) {
+                    new Alert(Alert.AlertType.INFORMATION,"Customer Added").show();
+                    loadTable();
+            }
+            else{
+    new Alert(Alert.AlertType.ERROR,"Customer Not Added").show();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
+
+
 
     @FXML
     void btnReloadOnAction(ActionEvent event) {
@@ -94,6 +145,7 @@ public class CustomerFormController  {
         colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
         colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         ArrayList<model.tm.CustomerTM> customerArrayList = new ArrayList<>();
+
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "rashpro");
@@ -119,7 +171,7 @@ public class CustomerFormController  {
             }
 
             ObservableList<model.tm.CustomerTM> observableList = FXCollections.observableArrayList(customerArrayList);
-
+            tblCustomers.setItems(observableList);
 
 
 
@@ -135,16 +187,22 @@ public class CustomerFormController  {
 
 
 
-    public void btnSearchCustomerOnAction(ActionEvent actionEvent) {
-    }
-
-    public void btnDeleteCustomerOnAction(ActionEvent actionEvent) {
-    }
 
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) {
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        cmbTitle.setItems(
+                FXCollections.observableArrayList(
+                        Arrays.asList("Mr","Miss","Ms")
+                )
+        );
+
+        loadTable();
     }
 }
