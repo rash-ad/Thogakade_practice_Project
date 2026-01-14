@@ -1,8 +1,10 @@
 package controller;
 
+import TM.CustomerTM;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import model.TM.Customer;
+import model.Customer;
 
 import java.net.URL;
 import java.sql.*;
@@ -101,7 +103,7 @@ public class CustomerFormController implements Initializable  {
         System.out.println(customer);
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "rashpro");
+            Connection connection = DBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             PreparedStatement psTm = connection.prepareStatement("Insert into customer values (?,?,?,?,?,?,?,?,?) ");
             psTm.setString(1,customer.getId());
@@ -144,11 +146,11 @@ public class CustomerFormController implements Initializable  {
         colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
         colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        ArrayList<model.tm.CustomerTM> customerArrayList = new ArrayList<>();
+        ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
 
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Thogakade", "root", "rashpro");
+            Connection connection = DBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from customer");
@@ -156,7 +158,7 @@ public class CustomerFormController implements Initializable  {
             System.out.println(resultSet);
             while (resultSet.next()){
                 customerArrayList.add(
-                        new model.tm.CustomerTM(
+                        new CustomerTM(
                                 resultSet.getString(1),
                                 resultSet.getString(2),
                                 resultSet.getString(3),
@@ -170,7 +172,7 @@ public class CustomerFormController implements Initializable  {
                 );
             }
 
-            ObservableList<model.tm.CustomerTM> observableList = FXCollections.observableArrayList(customerArrayList);
+            ObservableList<CustomerTM> observableList = FXCollections.observableArrayList(customerArrayList);
             tblCustomers.setItems(observableList);
 
 
@@ -192,7 +194,24 @@ public class CustomerFormController implements Initializable  {
     public void btnDeleteOnAction(ActionEvent actionEvent) {
     }
 
-    public void btnSearchOnAction(ActionEvent actionEvent) {
+    public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
+        Connection connection = DBConnection.getInstance().getConnection();
+        PreparedStatement psTm = connection.prepareStatement("select * from customer where CustId=?");
+        psTm.setString(1,txtId.getText());
+        ResultSet resultSet = psTm.executeQuery();
+        resultSet.next();
+        Customer customer = new Customer(
+                resultSet.getString(1),
+                resultSet.getString(2),
+                resultSet.getString(3),
+                resultSet.getDate(4).toLocalDate(),
+                resultSet.getDouble(5),
+                resultSet.getString(6),
+                resultSet.getString(7),
+                resultSet.getString(8),
+                resultSet.getString(9)
+        );
+        setTextValue(customer);
     }
 
     @Override
@@ -204,5 +223,20 @@ public class CustomerFormController implements Initializable  {
         );
 
         loadTable();
+    }
+    public void setTextValue(Customer customer){
+         txtId.setText(customer.getId());
+         cmbTitle.setValue(customer.getTitle());
+         txtName.setText(customer.getName());
+         dateDob.setValue(customer.getDob());
+         txtSalary.setText(customer.getSalary().toString());
+         txtAddress.setText(customer.getAddress());
+         txtCity.setText(customer.getCity());
+         txtProvince.setText(customer.getProvince());
+         txtPostalCode.setText(customer.getPostalCode());
+
+
+
+
     }
 }

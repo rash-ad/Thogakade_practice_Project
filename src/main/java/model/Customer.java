@@ -1,17 +1,17 @@
-package model.TM;
+package model;
 
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 @Getter
-@Setter@AllArgsConstructor
+@Setter
+@AllArgsConstructor
 @ToString
 @Data
 public class Customer {
     private String id;
-    private String name;
     private String title;
+    private String name;
     private LocalDate dob;
     private Double salary;
     private String address;
