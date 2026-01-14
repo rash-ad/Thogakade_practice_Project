@@ -191,7 +191,20 @@ public class CustomerFormController implements Initializable  {
 
 
 
-    public void btnDeleteOnAction(ActionEvent actionEvent) {
+    public void btnDeleteOnAction(ActionEvent actionEvent) throws SQLException {
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+
+            PreparedStatement psTm = connection.prepareStatement("DELETE FROM customer WHERE CustID=?");
+            psTm.setString(1,txtId.getText());
+
+            if(psTm.executeUpdate()>0){
+                new Alert(Alert.AlertType.INFORMATION,"Customer Deleted!").show();
+                loadTable();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
