@@ -1,4 +1,4 @@
-package model.tm;
+package TM;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
