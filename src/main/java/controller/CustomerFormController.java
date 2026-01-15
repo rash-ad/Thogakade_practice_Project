@@ -4,7 +4,7 @@ import TM.CustomerTM;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import db.DBConnection;
+import db.CustomerDBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -103,7 +103,7 @@ public class CustomerFormController implements Initializable  {
         System.out.println(customer);
 
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
+            Connection connection = CustomerDBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             PreparedStatement psTm = connection.prepareStatement("Insert into customer values (?,?,?,?,?,?,?,?,?) ");
             psTm.setString(1,customer.getId());
@@ -150,7 +150,7 @@ public class CustomerFormController implements Initializable  {
 
 
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
+            Connection connection = CustomerDBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from customer");
@@ -193,7 +193,7 @@ public class CustomerFormController implements Initializable  {
 
     public void btnDeleteOnAction(ActionEvent actionEvent) throws SQLException {
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
+            Connection connection = CustomerDBConnection.getInstance().getConnection();
 
             PreparedStatement psTm = connection.prepareStatement("DELETE FROM customer WHERE CustID=?");
             psTm.setString(1,txtId.getText());
@@ -208,7 +208,7 @@ public class CustomerFormController implements Initializable  {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
-        Connection connection = DBConnection.getInstance().getConnection();
+        Connection connection = CustomerDBConnection.getInstance().getConnection();
         PreparedStatement psTm = connection.prepareStatement("select * from customer where CustId=?");
         psTm.setString(1,txtId.getText());
         ResultSet resultSet = psTm.executeQuery();
