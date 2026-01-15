@@ -12,7 +12,7 @@ public class Item {
     private String id;
     private String name;
     private Double price;
-    private int quantity;
+    private Integer quantity;
     private String category;
 
 }
