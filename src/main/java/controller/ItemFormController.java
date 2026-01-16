@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -66,12 +67,38 @@ public class ItemFormController  implements Initializable {
     private TableColumn<?, ?> colQuantity;
 
     @FXML
-    void btnAddItemOnAction(ActionEvent event) {
+    void btnAddItemOnAction(ActionEvent event) throws SQLException {
+        String id = txtId.getText();
+        String name = txtName.getText();
+        Double price = Double.parseDouble(txtPrice.getText());
+        Integer quantity = Integer.parseInt(txtQuantity.getText());
+        String category = cmbCategory.getValue().toString();
+        Item item = new Item(id, name, price, quantity, category);
+
+        Connection connection = ItemDBConnection.getInstance().getConnection();
+        PreparedStatement psTm = connection.prepareStatement("insert into products values(?,?,?,?,?)");
+        System.out.println(connection);
+        System.out.println("connected to DB");
+        psTm.setString(1,item.getId());
+        psTm.setString(2,item.getName());
+        psTm.setInt(3,item.getQuantity());
+        psTm.setDouble(4,item.getPrice());
+        psTm.setString(5,item.getCategory());
+
+        if(psTm.executeUpdate()>0){
+            new Alert(Alert.AlertType.INFORMATION,"Customer Added").show();
+            loadTable();
+        }
+        else{
+            new Alert(Alert.AlertType.ERROR,"Customer Not Added").show();
+        }
+
 
     }
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
+
 
     }
 
