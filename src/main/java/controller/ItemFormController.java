@@ -17,6 +17,7 @@ import model.Item;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ItemFormController  implements Initializable {
@@ -36,7 +37,7 @@ public class ItemFormController  implements Initializable {
     private JFXButton btnSearch;
 
     @FXML
-    private JFXComboBox<?> cmbCategory;
+    private JFXComboBox cmbCategory;
 
     @FXML
     private JFXTextField txtId;
@@ -80,8 +81,35 @@ public class ItemFormController  implements Initializable {
     }
 
     @FXML
-    void btnSearchOnAction(ActionEvent event) {
+    void btnSearchOnAction(ActionEvent event) throws SQLException {
 
+            Connection connection = ItemDBConnection.getInstance().getConnection();
+            PreparedStatement psTm = connection.prepareStatement("Select * from products where id=?");
+            psTm.setString(1,txtId.getText());
+            ResultSet resultSet = psTm.executeQuery();
+            resultSet.next();
+
+                Item item = new Item(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getDouble(3),
+                        resultSet.getInt(4),
+                        resultSet.getString(5)
+
+                );
+                setTextValue(item);
+
+
+
+
+    }
+
+    private void setTextValue(Item item) {
+        txtId.setText(item.getId());
+        txtName.setText(item.getName());
+        txtPrice.setText(item.getPrice().toString());
+        txtQuantity.setText(item.getQuantity().toString());
+        cmbCategory.setValue(item.getCategory());
     }
 
     ArrayList<Item> itemArrayList=new ArrayList<>();
@@ -123,12 +151,12 @@ public class ItemFormController  implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        cmbCategory.setItems(
-//                FXCollections.observableArrayList(
-//                        Arrays.asList("Electronics","Furniture","Stationery ","Kitchen","Bags","Fashion","Accessories","Home Appliances")
-//
-//                )
-//        );
+        cmbCategory.setItems(
+                FXCollections.observableArrayList(
+                        Arrays.asList("Electronics","Furniture","Stationery ","Kitchen","Bags","Fashion","Accessories","Home Appliances")
+
+                )
+        );
         loadTable();
     }
 }
