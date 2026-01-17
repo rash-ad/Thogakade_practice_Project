@@ -86,11 +86,11 @@ public class ItemFormController  implements Initializable {
         psTm.setString(5,item.getCategory());
 
         if(psTm.executeUpdate()>0){
-            new Alert(Alert.AlertType.INFORMATION,"Customer Added").show();
+            new Alert(Alert.AlertType.INFORMATION,"Product Added").show();
             loadTable();
         }
         else{
-            new Alert(Alert.AlertType.ERROR,"Customer Not Added").show();
+            new Alert(Alert.AlertType.ERROR,"Product Not Added").show();
         }
 
 
@@ -98,7 +98,21 @@ public class ItemFormController  implements Initializable {
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
+        try {
+            Connection connection = ItemDBConnection.getInstance().getConnection();
+            PreparedStatement psTm = connection.prepareStatement("delete from Products where id=? ");
+            psTm.setString(1,txtId.getText());
 
+            if(psTm.executeUpdate()>0){
+                new Alert(Alert.AlertType.INFORMATION,"Product Deleted").show();
+                loadTable();
+            }
+            else{
+                new Alert(Alert.AlertType.ERROR,"Product Not Deleted").show();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
