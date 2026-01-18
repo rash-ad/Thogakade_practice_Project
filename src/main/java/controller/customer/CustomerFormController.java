@@ -1,10 +1,10 @@
-package controller;
+package controller.customer;
 
 import TM.CustomerTM;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import db.CustomerDBConnection;
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +19,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class CustomerFormController implements Initializable  {
@@ -103,7 +104,7 @@ public class CustomerFormController implements Initializable  {
         System.out.println(customer);
 
         try {
-            Connection connection = CustomerDBConnection.getInstance().getConnection();
+            Connection connection = DBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             PreparedStatement psTm = connection.prepareStatement("Insert into customer values (?,?,?,?,?,?,?,?,?) ");
             psTm.setString(1,customer.getId());
@@ -137,52 +138,26 @@ public class CustomerFormController implements Initializable  {
         loadTable();
     }
 
-    private void loadTable() throws RuntimeException {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colDob.setCellValueFactory(new PropertyValueFactory<>("dob"));
-        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
-        colSalary.setCellValueFactory(new PropertyValueFactory<>("salary"));
-        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
-        colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
-        colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
+    public void loadTable() {
 
+        List<Customer> all = new CustomerServiceImpl().getAll();
+        ArrayList<CustomerTM> customerTMArrayList = new ArrayList<>();
 
-        try {
-            Connection connection = CustomerDBConnection.getInstance().getConnection();
-            System.out.println("Connection " + connection);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from customer");
+        all.forEach(customer -> {
+            customerTMArrayList.add(new CustomerTM(
+                    customer.getId(),
+                    customer.getTitle(),
+                    customer.getName(),
+                    customer.getDob(),
+                    customer.getSalary(),
+                    customer.getAddress(),
+                    customer.getCity(),
+                    customer.getProvince(),
+                    customer.getPostalCode()
+            ));
+        });
 
-            System.out.println(resultSet);
-            while (resultSet.next()){
-                customerArrayList.add(
-                        new CustomerTM(
-                                resultSet.getString(1),
-                                resultSet.getString(2),
-                                resultSet.getString(3),
-                                resultSet.getDate(4),
-                                resultSet.getDouble(5),
-                                resultSet.getString(6),
-                                resultSet.getString(7),
-                                resultSet.getString(8),
-                                resultSet.getString(9)
-                        )
-                );
-            }
-
-            ObservableList<CustomerTM> observableList = FXCollections.observableArrayList(customerArrayList);
-            tblCustomers.setItems(observableList);
-
-
-
-
-        } catch (SQLException e) {
-            System.out.println("Cannot run");
-            throw new RuntimeException(e);
-
-        }
+        tblCustomers.setItems(FXCollections.observableArrayList(customerTMArrayList));
 
 
     }
@@ -193,7 +168,7 @@ public class CustomerFormController implements Initializable  {
 
     public void btnDeleteOnAction(ActionEvent actionEvent) throws SQLException {
         try {
-            Connection connection = CustomerDBConnection.getInstance().getConnection();
+            Connection connection = DBConnection.getInstance().getConnection();
 
             PreparedStatement psTm = connection.prepareStatement("DELETE FROM customer WHERE CustID=?");
             psTm.setString(1,txtId.getText());
@@ -208,7 +183,7 @@ public class CustomerFormController implements Initializable  {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
-        Connection connection = CustomerDBConnection.getInstance().getConnection();
+        Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement psTm = connection.prepareStatement("select * from customer where CustId=?");
         psTm.setString(1,txtId.getText());
         ResultSet resultSet = psTm.executeQuery();
@@ -224,11 +199,21 @@ public class CustomerFormController implements Initializable  {
                 resultSet.getString(8),
                 resultSet.getString(9)
         );
-        setTextValue(customer);
+        setTextValueToCustomer(customer);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        colSalary.setCellValueFactory(new PropertyValueFactory<>("salary"));
+        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
+        colDob.setCellValueFactory(new PropertyValueFactory<>("dob"));
+        colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
+        colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+
+
         cmbTitle.setItems(
                 FXCollections.observableArrayList(
                         Arrays.asList("Mr","Miss","Ms")
@@ -237,7 +222,8 @@ public class CustomerFormController implements Initializable  {
 
         loadTable();
     }
-    public void setTextValue(Customer customer){
+
+     private void setTextValueToCustomer(Customer customer){
          txtId.setText(customer.getId());
          cmbTitle.setValue(customer.getTitle());
          txtName.setText(customer.getName());

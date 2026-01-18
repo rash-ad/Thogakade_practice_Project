@@ -1,9 +1,9 @@
-package controller;
+package controller.item;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import db.ItemDBConnection;
+import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -75,7 +75,7 @@ public class ItemFormController  implements Initializable {
         String category = cmbCategory.getValue().toString();
         Item item = new Item(id, name, price, quantity, category);
 
-        Connection connection = ItemDBConnection.getInstance().getConnection();
+        Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement psTm = connection.prepareStatement("insert into products values(?,?,?,?,?)");
         System.out.println(connection);
         System.out.println("connected to DB");
@@ -99,7 +99,7 @@ public class ItemFormController  implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
         try {
-            Connection connection = ItemDBConnection.getInstance().getConnection();
+            Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement psTm = connection.prepareStatement("delete from Products where id=? ");
             psTm.setString(1,txtId.getText());
 
@@ -124,7 +124,7 @@ public class ItemFormController  implements Initializable {
     @FXML
     void btnSearchOnAction(ActionEvent event) throws SQLException {
 
-            Connection connection = ItemDBConnection.getInstance().getConnection();
+            Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement psTm = connection.prepareStatement("Select * from products where id=?");
             psTm.setString(1,txtId.getText());
             ResultSet resultSet = psTm.executeQuery();
@@ -164,7 +164,7 @@ public class ItemFormController  implements Initializable {
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
 
         try {
-            Connection connection = ItemDBConnection.getInstance().getConnection();
+            Connection connection = DBConnection.getInstance().getConnection();
             System.out.println(connection);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from products");
@@ -180,6 +180,10 @@ public class ItemFormController  implements Initializable {
                 );
 
             }
+    tableProduct.getSelectionModel().selectedItemProperty().addListener((observableValue,oldValue,newValue)->{
+    assert newValue!=null;
+    setTextToValues((Item) newValue);
+    });
 
             ObservableList<Item> observableList = FXCollections.observableArrayList(itemArrayList);
            tableProduct.setItems(observableList);
@@ -199,5 +203,12 @@ public class ItemFormController  implements Initializable {
                 )
         );
         loadTable();
+    }
+    void setTextToValues(Item item){
+        txtId.setText(item.getId());
+        txtName.setText(item.getName());
+        txtPrice.setText(item.getPrice().toString());
+        txtQuantity.setText(item.getQuantity().toString());
+        cmbCategory.setValue(item.getCategory());
     }
 }
