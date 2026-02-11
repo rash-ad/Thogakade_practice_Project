@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Customer;
+import service.custom.impl.CustomerServiceImpl;
 
 import java.net.URL;
 import java.sql.*;
@@ -118,7 +119,7 @@ public class CustomerFormController implements Initializable  {
             psTm.setString(9,customer.getPostalCode());
 
 
-            if (psTm.executeUpdate()>0) {
+            if (new CustomerServiceImpl().addCustomer(customer)) {
                     new Alert(Alert.AlertType.INFORMATION,"Customer Added").show();
                     loadTable();
             }
