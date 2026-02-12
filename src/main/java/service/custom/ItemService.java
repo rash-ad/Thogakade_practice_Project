@@ -1,4 +1,4 @@
-package controller.item;
+package service.custom;
 
 import model.Item;
 
@@ -10,5 +10,4 @@ public interface ItemService {
     boolean deleteItem(String  id);
     Item searchById(String id);
     List<Item> getAll();
-
 }

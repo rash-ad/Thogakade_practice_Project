@@ -1,14 +1,13 @@
-package controller.customer;
+package service.custom.impl;
 
 import db.DBConnection;
 import javafx.scene.control.Alert;
 import model.Customer;
+import service.custom.CustomerService;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 public class CustomerServiceImpl implements CustomerService {
     @Override
@@ -44,21 +43,20 @@ public class CustomerServiceImpl implements CustomerService {
     public boolean deleteCustomer(String id) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
+            PreparedStatement psTm = connection.prepareStatement("delete from customer where id=? ");
+            psTm.setString(1,id);
 
-            PreparedStatement psTm = connection.prepareStatement("DELETE FROM customer WHERE CustID=?");
-           psTm.setString(1,id);
-
-            if (psTm.executeUpdate() > 0) {
-                new Alert(Alert.AlertType.INFORMATION, "Customer Deleted!").show();
-                //loadTable();
+            if(psTm.executeUpdate()>0){
+                new Alert(Alert.AlertType.INFORMATION,"Customer Deleted SuccessFully").show();
             }
-            return psTm.executeUpdate()>0;
+            else{
+                new Alert(Alert.AlertType.ERROR,"Customer Not Deleted").show();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+        return false;
     }
-
 
     @Override
     public Customer searchCustomerById(String id) {
@@ -96,7 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             Statement statement = connection.createStatement();
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROm customer");
+            ResultSet resultSet = statement.executeQuery("SELECT * from customer");
 
             ArrayList<Customer> customerArrayList = new ArrayList<>();
 
@@ -121,5 +119,6 @@ public class CustomerServiceImpl implements CustomerService {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
