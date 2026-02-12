@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer searchCustomerById(String id) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement("select * from customer where CustId=?");
+            PreparedStatement psTm = connection.prepareStatement("select * from customer where id=?");
             psTm.setString(1,id);
 
             ResultSet resultSet = psTm.executeQuery();

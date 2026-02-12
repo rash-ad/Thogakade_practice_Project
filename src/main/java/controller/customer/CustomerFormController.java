@@ -13,7 +13,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Customer;
+import service.ServiceFactory;
 import service.custom.impl.CustomerServiceImpl;
+import util.ServiceType;
 
 import java.net.URL;
 import java.sql.*;
@@ -184,23 +186,7 @@ public class CustomerFormController implements Initializable  {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
-        Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement psTm = connection.prepareStatement("select * from customer where CustId=?");
-        psTm.setString(1,txtId.getText());
-        ResultSet resultSet = psTm.executeQuery();
-        resultSet.next();
-        Customer customer = new Customer(
-                resultSet.getString(1),
-                resultSet.getString(2),
-                resultSet.getString(3),
-                resultSet.getDate(4).toLocalDate(),
-                resultSet.getDouble(5),
-                resultSet.getString(6),
-                resultSet.getString(7),
-                resultSet.getString(8),
-                resultSet.getString(9)
-        );
-        setTextValueToCustomer(customer);
+        ServiceType serviceType= ServiceFactory.getInstance().getServiceType(ServiceType.CUSTOMER);
     }
 
     @Override
