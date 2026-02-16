@@ -13,12 +13,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lombok.SneakyThrows;
 import model.Item;
+import service.custom.impl.ItemServiceImpl;
 
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ItemFormController  implements Initializable {
@@ -28,6 +31,10 @@ public class ItemFormController  implements Initializable {
 
     @FXML
     private JFXButton btnDelete;
+
+    @FXML
+    private TableView<Item> tableItem;
+
 
     @FXML
     private JFXButton btnReload;
@@ -68,30 +75,7 @@ public class ItemFormController  implements Initializable {
 
     @FXML
     void btnAddItemOnAction(ActionEvent event) throws SQLException {
-        String id = txtId.getText();
-        String name = txtName.getText();
-        Double price = Double.parseDouble(txtPrice.getText());
-        Integer quantity = Integer.parseInt(txtQuantity.getText());
-        String category = cmbCategory.getValue().toString();
-        Item item = new Item(id, name, price, quantity, category);
 
-        Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement psTm = connection.prepareStatement("insert into products values(?,?,?,?,?)");
-        System.out.println(connection);
-        System.out.println("connected to DB");
-        psTm.setString(1,item.getId());
-        psTm.setString(2,item.getName());
-        psTm.setInt(3,item.getQuantity());
-        psTm.setDouble(4,item.getPrice());
-        psTm.setString(5,item.getCategory());
-
-        if(psTm.executeUpdate()>0){
-            new Alert(Alert.AlertType.INFORMATION,"Product Added").show();
-            loadTable();
-        }
-        else{
-            new Alert(Alert.AlertType.ERROR,"Product Not Added").show();
-        }
 
 
     }
@@ -117,83 +101,48 @@ public class ItemFormController  implements Initializable {
     }
 
     @FXML
-    void btnReloadOnAction(ActionEvent event) {
+    void btnReloadOnAction(ActionEvent event) throws SQLException {
     loadTable();
     }
 
     @FXML
-    void btnSearchOnAction(ActionEvent event) throws SQLException {
-
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement("Select * from products where id=?");
-            psTm.setString(1,txtId.getText());
-            ResultSet resultSet = psTm.executeQuery();
-            resultSet.next();
-
-                Item item = new Item(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getDouble(3),
-                        resultSet.getInt(4),
-                        resultSet.getString(5)
-
-                );
-                setTextValue(item);
-
+    void btnSearchOnAction(ActionEvent event) throws SQLException{
 
 
 
     }
 
     private void setTextValue(Item item) {
-        txtId.setText(item.getId());
-        txtName.setText(item.getName());
-        txtPrice.setText(item.getPrice().toString());
-        txtQuantity.setText(item.getQuantity().toString());
-        cmbCategory.setValue(item.getCategory());
+        txtId.setText(item.getItemCode());
+        txtName.setText(item.getDescription());
+        txtPrice.setText(item.getPackSize().toString());
+        txtQuantity.setText(item.getUnitPrice().toString());
+        cmbCategory.setValue(item.getStock());
     }
 
     ArrayList<Item> itemArrayList=new ArrayList<>();
 
 
-    private void loadTable(){
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
+    private void loadTable() throws SQLException {
+        ItemServiceImpl itemService = new ItemServiceImpl();
+        List<Item> all = itemService.getAll();
 
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            System.out.println(connection);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from products");
-            while(resultSet.next()){
-                itemArrayList.add(
-                        new Item(
-                resultSet.getString(1),
-                resultSet.getString(2),
-                resultSet.getDouble(3),
-                resultSet.getInt(4),
-                resultSet.getString(5)
-                        )
-                );
+        ArrayList<Item> itemTMArrayList = new ArrayList<>();
+        all.forEach(item -> {
+            itemArrayList.add(new Item(
+                    item.getItemCode(),
+                    item.getDescription(),
+                    item.getPackSize(),
+                    item.getUnitPrice(),
+                    item.getStock()
 
-            }
-    tableProduct.getSelectionModel().selectedItemProperty().addListener((observableValue,oldValue,newValue)->{
-    assert newValue!=null;
-    setTextToValues((Item) newValue);
-    });
-
-            ObservableList<Item> observableList = FXCollections.observableArrayList(itemArrayList);
-           tableProduct.setItems(observableList);
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            ));
+        });
+        tableItem.setItems(FXCollections.observableArrayList(itemTMArrayList));
 
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cmbCategory.setItems(
@@ -203,12 +152,13 @@ public class ItemFormController  implements Initializable {
                 )
         );
         loadTable();
+
     }
-    void setTextToValues(Item item){
-        txtId.setText(item.getId());
-        txtName.setText(item.getName());
-        txtPrice.setText(item.getPrice().toString());
-        txtQuantity.setText(item.getQuantity().toString());
-        cmbCategory.setValue(item.getCategory());
+    void setTextValues(Item item){
+        txtId.setText(item.getItemCode());
+        txtName.setText(item.getDescription());
+        txtPrice.setText(item.getPackSize().toString());
+        txtQuantity.setText(item.getUnitPrice().toString());
+        cmbCategory.setValue(item.getStock());
     }
 }

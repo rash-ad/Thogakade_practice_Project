@@ -1,37 +1,18 @@
 package service.custom.impl;
 
-import db.DBConnection;
-import javafx.scene.control.Alert;
 import model.Customer;
+import repository.RepositoryFactory;
+import repository.custom.CustomerRepository;
 import service.custom.CustomerService;
+import util.RepositoryType;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {
-    @Override
-    public boolean addCustomer(Customer customer) {
-        PreparedStatement psTm;
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            System.out.println("Connection " + connection);
-            psTm = connection.prepareStatement("Insert into customer values (?,?,?,?,?,?,?,?,?) ");
-            psTm.setString(1, customer.getId());
-            psTm.setString(2, customer.getTitle());
-            psTm.setString(3, customer.getName());
-            psTm.setObject(4, customer.getDob());
-            psTm.setDouble(5, customer.getSalary());
-            psTm.setString(6, customer.getAddress());
-            psTm.setString(7, customer.getCity());
-            psTm.setString(8, customer.getProvince());
-            psTm.setString(9, customer.getPostalCode());
-
-            return psTm.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    CustomerRepository customerRepository = RepositoryFactory.getInstance().getRepositoryType(RepositoryType.CUSTOMER);
+    public boolean addCustomer(Customer customer)  {
+          return customerRepository.create(customer);
     }
 
     @Override
@@ -41,84 +22,26 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public boolean deleteCustomer(String id) {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement("delete from customer where id=? ");
-            psTm.setString(1,id);
-
-            if(psTm.executeUpdate()>0){
-                new Alert(Alert.AlertType.INFORMATION,"Customer Deleted SuccessFully").show();
-            }
-            else{
-                new Alert(Alert.AlertType.ERROR,"Customer Not Deleted").show();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+        return customerRepository.deleteById(id);
     }
 
     @Override
     public Customer searchCustomerById(String id) {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement("select * from customer where id=?");
-            psTm.setString(1,id);
-
-            ResultSet resultSet = psTm.executeQuery();
-            resultSet.next();
-            Customer customer = new Customer(
-                    resultSet.getString(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getDate(4).toLocalDate(),
-                    resultSet.getDouble(5),
-                    resultSet.getString(6),
-                    resultSet.getString(7),
-                    resultSet.getString(8),
-                    resultSet.getString(9)
-            );
-            return customer;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        return customerRepository.getById(id);
     }
 
     @Override
-    public List<Customer> getAll() {
-        try {
+    public List<Customer> getAll()  {
+        return customerRepository.getAll();
+    }
 
-            Connection connection = DBConnection.getInstance().getConnection();
-
-            Statement statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery("SELECT * from customer");
-
-            ArrayList<Customer> customerArrayList = new ArrayList<>();
-
-            while (resultSet.next()){
-                customerArrayList.add(
-                        new Customer(
-                                resultSet.getString(1),
-                                resultSet.getString(2),
-                                resultSet.getString(3),
-                                resultSet.getDate(4).toLocalDate(),
-                                resultSet.getDouble(5),
-                                resultSet.getString(6),
-                                resultSet.getString(7),
-                                resultSet.getString(8),
-                                resultSet.getString(9)
-                        )
-                );
-            }
-
-            return customerArrayList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    @Override
+    public List<String> getAllCustomerIDs()  {
+        List<Customer> all = getAll();
+        ArrayList<String> idList = new ArrayList<>();
+        for (Customer customer : all) {
+            idList.add(customer.getId());
         }
-
+        return idList;
     }
 }
