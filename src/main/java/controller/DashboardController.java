@@ -53,8 +53,8 @@ public class DashboardController {
         }
     }
     @FXML
-    void btnOrderFormOnAction(ActionEvent event) {
-        try {
+    void btnOrderFormOnAction(ActionEvent event) throws IOException {
+
             URL resource = this.getClass().getResource("/view/Order_Form.fxml");
             assert resource!=null;
 
@@ -62,9 +62,7 @@ public class DashboardController {
             dashRoot.getChildren().clear();
             dashRoot.getChildren().add(parent);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
 }

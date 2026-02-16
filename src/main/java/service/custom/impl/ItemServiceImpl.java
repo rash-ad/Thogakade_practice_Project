@@ -2,9 +2,9 @@ package service.custom.impl;
 
 import db.DBConnection;
 import javafx.scene.control.Alert;
-import model.Customer;
 import model.Item;
 import service.custom.ItemService;
+import util.CrudUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,11 +21,12 @@ public class ItemServiceImpl implements ItemService {
             Connection connection = DBConnection.getInstance().getConnection();
             System.out.println("Connection " + connection);
             psTm = connection.prepareStatement("Insert into item values (?,?,?,?,?,?,?,?,?) ");
-            psTm.setString(1, item.getId());
-            psTm.setString(2, item.getName());
-            psTm.setDouble(3, item.getPrice());
-            psTm.setInt(4, item.getQuantity());
-            psTm.setString(5, item.getCategory());
+            psTm.setString(1, item.getItemCode());
+            psTm.setString(2, item.getDescription());
+
+            psTm.setString(4, item.getPackSize());
+            psTm.setDouble(3, item.getUnitPrice());
+            psTm.setInt(5, item.getStock());
 
             return psTm.executeUpdate() > 0;
 
@@ -37,6 +38,22 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public boolean updateItem(Item item) {
         return false;
+    }
+
+    @Override
+    public boolean deleteItem(Item item) {
+        return false;
+    }
+
+
+    @Override
+    public List<Item> getAllItems() throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public List<String> getItemCodes() throws SQLException {
+        return List.of();
     }
 
     @Override
@@ -59,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item searchById(String id) {
+    public Item searchItemById(String id) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement psTm = connection.prepareStatement("select * from item  where id=?");
@@ -67,14 +84,14 @@ public class ItemServiceImpl implements ItemService {
 
             ResultSet resultSet = psTm.executeQuery();
             resultSet.next();
-            Item item = new Item(
-                    resultSet.getString(1),
-                    resultSet.getString(2),
-                    resultSet.getDouble(3),
-                    resultSet.getInt(4),
-                    resultSet.getString(5)
+            Item item = new Item();
+                    resultSet.getString(1);
+                    resultSet.getString(2);
+                    resultSet.getDouble(3);
+                    resultSet.getInt(4);
+                    resultSet.getString(5);
 
-            );
+
             return item;
 
         } catch (SQLException e) {
@@ -84,31 +101,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAll() {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * From item");
+    public List<Item> getAll() throws SQLException {
+        ResultSet resultSet = CrudUtil.execute("SELECT * FROM item");
+        ArrayList<Item> items = new ArrayList<>();
 
-            ArrayList<Item> itemArrayList = new ArrayList<>();
-
-            while (resultSet.next()){
-                Item itemTM = new Item(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getDouble(3),
-                        resultSet.getInt(4),
-                        resultSet.getString(5)
-
-                );
-                itemArrayList.add(itemTM);
-            }
-
-            return  itemArrayList;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        while (resultSet.next()) {
+            Item item = new Item();
+            item.setItemCode(resultSet.getString(1));
+            item.setDescription(resultSet.getString(2));
+            item.setPackSize(resultSet.getString(3));
+            item.setUnitPrice(resultSet.getDouble(4));
+            item.setStock(resultSet.getInt(4));
+            items.add(item);
         }
+        return items;
+    }
 
     }
-    }
+
 

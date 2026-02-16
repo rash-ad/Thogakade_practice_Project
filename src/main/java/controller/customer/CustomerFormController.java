@@ -17,6 +17,7 @@ import service.ServiceFactory;
 import service.custom.impl.CustomerServiceImpl;
 import util.ServiceType;
 
+
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
@@ -26,6 +27,38 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class CustomerFormController implements Initializable  {
+    @FXML
+    private ComboBox<?> cmbCustomerIds;
+
+    @FXML
+    private ComboBox<?> cmbItemIds;
+
+    @FXML
+    private Label lblAddress;
+
+    @FXML
+    private Label lblDate;
+
+    @FXML
+    private Label lblDescription;
+
+    @FXML
+    private Label lblItemName;
+
+    @FXML
+    private Label lblName;
+
+    @FXML
+    private Label lblPhone;
+
+    @FXML
+    private Label lblStock;
+
+    @FXML
+    private Label lblTime;
+
+    @FXML
+    private Label lblUnitPrice;
     @FXML
     private JFXButton btnAddCustomer;
 
@@ -79,6 +112,9 @@ public class CustomerFormController implements Initializable  {
 
     @FXML
     private JFXTextField txtId;
+    @FXML
+    private TableView<?> tableItem;
+
 
     @FXML
     private JFXTextField txtName;
@@ -91,6 +127,8 @@ public class CustomerFormController implements Initializable  {
 
     @FXML
     private JFXTextField txtSalary;
+
+
     @FXML
     void btnAddCustomerOnAction(ActionEvent event) {
 
@@ -144,10 +182,10 @@ public class CustomerFormController implements Initializable  {
     public void loadTable() {
 
         List<Customer> all = new CustomerServiceImpl().getAll();
-        ArrayList<CustomerTM> customerTMArrayList = new ArrayList<>();
+        ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
 
         all.forEach(customer -> {
-            customerTMArrayList.add(new CustomerTM(
+            customerArrayList.add(new CustomerTM(
                     customer.getId(),
                     customer.getTitle(),
                     customer.getName(),
@@ -160,7 +198,7 @@ public class CustomerFormController implements Initializable  {
             ));
         });
 
-        tblCustomers.setItems(FXCollections.observableArrayList(customerTMArrayList));
+        tblCustomers.setItems(FXCollections.observableArrayList(customerArrayList));
 
 
     }
@@ -186,7 +224,7 @@ public class CustomerFormController implements Initializable  {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
-        ServiceType serviceType= ServiceFactory.getInstance().getServiceType(ServiceType.CUSTOMER);
+
     }
 
     @Override
@@ -210,7 +248,7 @@ public class CustomerFormController implements Initializable  {
         loadTable();
     }
 
-     private void setTextValueToCustomer(Customer customer){
+     private void setTextToValues(Customer customer){
          txtId.setText(customer.getId());
          cmbTitle.setValue(customer.getTitle());
          txtName.setText(customer.getName());

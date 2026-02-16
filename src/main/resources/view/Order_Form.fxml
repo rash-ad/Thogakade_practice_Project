@@ -1,52 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="555.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.order.OrderFormController">
+
+<AnchorPane prefHeight="555.0" prefWidth="708.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.order.OrderFormController">
     <children>
-        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#002140" height="50.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="708.0" />
-        <Label layoutX="286.0" layoutY="11.0" text="Order Form" textFill="WHITE">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00519e" height="70.0" stroke="BLACK" strokeType="INSIDE" width="708.0" />
+        <Label layoutX="290.0" layoutY="17.0" text="Order Form" textFill="WHITE">
             <font>
-                <Font name="System Bold Italic" size="20.0" />
+                <Font size="25.0" />
             </font>
         </Label>
-        <JFXButton fx:id="btnAddCustomer" layoutX="576.0" layoutY="219.0" onAction="#btnAddCustomerOnAction" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #27ae60;" text="Add Customer" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="12.0" />
-            </font>
-        </JFXButton>
-        <JFXButton fx:id="btnReload" layoutX="473.0" layoutY="220.0" onAction="#btnReloadOnAction" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #f1c40f;" text="Reload" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="12.0" />
-            </font>
-        </JFXButton>
-        <TableView fx:id="tblCustomers" layoutX="35.0" layoutY="278.0" prefHeight="247.0" prefWidth="638.0" stylesheets="@../css/style.css">
-            <columns>
-                <TableColumn fx:id="colId" prefWidth="43.0" text="ID" />
-                <TableColumn fx:id="colName" prefWidth="95.0" text="Name" />
-                <TableColumn fx:id="colDob" prefWidth="74.0" text="DOB" />
-                <TableColumn fx:id="colSalary" prefWidth="61.0" text="Salary" />
-                <TableColumn fx:id="colAddress" prefWidth="135.0" text="Address" />
-                <TableColumn fx:id="colCity" prefWidth="81.0" text="City" />
-                <TableColumn fx:id="colProvince" prefWidth="73.0" text="Province" />
-                <TableColumn fx:id="colPostalCode" prefWidth="75.0" text="Postal Code" />
-            </columns>
-        </TableView>
-        <JFXButton fx:id="btnDelete" layoutX="368.0" layoutY="220.0" onAction="#btnDeleteOnAction" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #c0392b;" text="Delete" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="12.0" />
-            </font>
-        </JFXButton>
-        <JFXButton fx:id="btnSearch" layoutX="261.0" layoutY="220.0" onAction="#btnSearchOnAction" prefHeight="30.0" prefWidth="97.0" style="-fx-background-color: #3498db;" text="Search" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="12.0" />
-            </font>
-        </JFXButton>
+        <TextField layoutX="18.0" layoutY="87.0" promptText="Order ID" />
+        <Label fx:id="lblDate" layoutX="614.0" layoutY="17.0" text="yyyy-MM-dd" textFill="WHITE" />
+        <Label fx:id="lblTime" layoutX="626.0" layoutY="45.0" text="00:00:00" textFill="WHITE" />
+        <ComboBox fx:id="cmbCustomerIds" layoutX="191.0" layoutY="87.0" prefWidth="150.0" promptText="Customer ID" />
+        <Label fx:id="lblName" layoutX="376.0" layoutY="91.0" text="Name" />
+        <Label fx:id="lblAddress" layoutX="488.0" layoutY="91.0" text="Address" />
+        <Label fx:id="lblPhone" layoutX="605.0" layoutY="91.0" text="TP" />
+        <ComboBox fx:id="cmbItemIds" layoutX="18.0" layoutY="138.0" prefWidth="150.0" promptText="Item Codes" />
+        <Label fx:id="lblItemName" layoutX="207.0" layoutY="142.0" text="Item Name" />
+        <Label fx:id="lblDescription" layoutX="346.0" layoutY="142.0" text="Description" />
+        <Label fx:id="lblStock" layoutX="483.0" layoutY="142.0" text="Stock" />
+        <Label fx:id="lblUnitPrice" layoutX="578.0" layoutY="142.0" text="Unit Price" />
+        <Separator layoutX="31.0" layoutY="125.0" prefHeight="0.0" prefWidth="630.0" />
     </children>
 </AnchorPane>

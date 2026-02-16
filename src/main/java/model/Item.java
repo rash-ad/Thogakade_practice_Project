@@ -5,14 +5,14 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 @Data
-
 public class Item {
-    private String id;
-    private String name;
-    private Double price;
-    private Integer quantity;
-    private String category;
+    private String itemCode;
+    private String description;
+    private String packSize;
+    private Double unitPrice;
+    private int stock;
 
 }
