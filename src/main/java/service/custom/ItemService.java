@@ -21,5 +21,7 @@ public interface ItemService extends SuperService {
 
     Item searchItemById(String id);
 
+    Item searchById(String id);
+
     List<Item> getAll()throws SQLException;
 }

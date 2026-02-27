@@ -17,7 +17,7 @@ public class RepositoryFactory {
     }
 
     public static RepositoryFactory getInstance() {
-        return instance == null ? instance = new RepositoryFactory() : null;
+        return instance == null ? instance = new RepositoryFactory() : instance;
     }
 
     public <T extends SuperRepository> T getRepositoryType(RepositoryType repositoryType) {

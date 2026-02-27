@@ -58,10 +58,7 @@ public class ItemRepositoryImpl implements ItemRepository {
             item.setDescription(resultSet.getString(2));
             item.setPackSize(resultSet.getString(3));
             item.setUnitPrice(resultSet.getDouble(4));
-            item.setStock(resultSet.getInt(5));
-
             items.add(item);
-
         }
         return items;
     }
