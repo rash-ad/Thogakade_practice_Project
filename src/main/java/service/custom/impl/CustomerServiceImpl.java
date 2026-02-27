@@ -6,13 +6,16 @@ import repository.custom.CustomerRepository;
 import service.custom.CustomerService;
 import util.RepositoryType;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {
     CustomerRepository customerRepository = RepositoryFactory.getInstance().getRepositoryType(RepositoryType.CUSTOMER);
-    public boolean addCustomer(Customer customer)  {
-          return customerRepository.create(customer);
+
+    @Override
+    public boolean addCustomer(Customer customer) throws SQLException {
+        return customerRepository.create(customer);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer searchCustomerById(String id) {
+    public Customer searchCustomerById(String id) throws SQLException {
         return customerRepository.getById(id);
     }
 
@@ -36,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<String> getAllCustomerIDs()  {
+    public List<String> getAllCustomerIDs() {
         List<Customer> all = getAll();
         ArrayList<String> idList = new ArrayList<>();
         for (Customer customer : all) {

@@ -13,6 +13,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Customer;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import service.ServiceFactory;
 import service.custom.impl.CustomerServiceImpl;
 import util.ServiceType;
@@ -124,9 +128,27 @@ public class CustomerFormController implements Initializable  {
 
     @FXML
     private JFXTextField txtProvince;
-
+    @FXML
+    private JFXButton btnExport;
     @FXML
     private JFXTextField txtSalary;
+    @FXML
+    void btnExportCustomerOnAction(ActionEvent event) {
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/Report/CustomerForm.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
+            JasperExportManager.exportReportToPdfFile(jasperPrint,"CustomerForm.pdf");
+            JasperViewer.viewReport(jasperPrint,false);
+
+
+
+
+        } catch (JRException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Export Customer form Button clicked....");
+    }
 
 
     @FXML
@@ -175,30 +197,32 @@ public class CustomerFormController implements Initializable  {
 
 
     @FXML
-    void btnReloadOnAction(ActionEvent event) {
+    void btnReloadOnAction(ActionEvent event) throws SQLException {
         loadTable();
     }
 
-    public void loadTable() {
+    public void loadTable(){
 
-        List<Customer> all = new CustomerServiceImpl().getAll();
-        ArrayList<CustomerTM> customerArrayList = new ArrayList<>();
 
-        all.forEach(customer -> {
-            customerArrayList.add(new CustomerTM(
-                    customer.getId(),
-                    customer.getTitle(),
-                    customer.getName(),
-                    customer.getDob(),
-                    customer.getSalary(),
-                    customer.getAddress(),
-                    customer.getCity(),
-                    customer.getProvince(),
-                    customer.getPostalCode()
-            ));
-        });
+            List<Customer> all  = new CustomerServiceImpl().getAll();
+            ArrayList<CustomerTM> customerTMArrayList = new ArrayList<>();
 
-        tblCustomers.setItems(FXCollections.observableArrayList(customerArrayList));
+            all.forEach(customer -> {
+                customerTMArrayList.add(new CustomerTM(
+                        customer.getId(),
+                        customer.getTitle(),
+                        customer.getName(),
+                        customer.getDob(),
+                        customer.getSalary(),
+                        customer.getAddress(),
+                        customer.getCity(),
+                        customer.getProvince(),
+                        customer.getPostalCode()
+                ));
+            });
+
+            tblCustomers.setItems(FXCollections.observableArrayList(customerTMArrayList));
+
 
 
     }
@@ -224,7 +248,6 @@ public class CustomerFormController implements Initializable  {
     }
 
     public void btnSearchOnAction(ActionEvent actionEvent) throws SQLException {
-
     }
 
     @Override
@@ -237,7 +260,7 @@ public class CustomerFormController implements Initializable  {
         colDob.setCellValueFactory(new PropertyValueFactory<>("dob"));
         colProvince.setCellValueFactory(new PropertyValueFactory<>("province"));
         colPostalCode.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-
+        loadTable();
 
         cmbTitle.setItems(
                 FXCollections.observableArrayList(
@@ -245,7 +268,6 @@ public class CustomerFormController implements Initializable  {
                 )
         );
 
-        loadTable();
     }
 
      private void setTextToValues(Customer customer){

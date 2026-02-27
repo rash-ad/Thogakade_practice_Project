@@ -14,7 +14,7 @@ public interface CustomerService extends SuperService {
     boolean deleteCustomer(String id);
 
     Customer searchCustomerById(String id) throws SQLException;
-    List<String> getAllCustomerIDs() throws SQLException;
+    List<String> getAllCustomerIDs() ;
     List<Customer> getAll()throws SQLException;;
 
 }

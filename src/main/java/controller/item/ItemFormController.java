@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
 import model.Item;
@@ -32,9 +33,29 @@ public class ItemFormController  implements Initializable {
     @FXML
     private JFXButton btnDelete;
 
+
+
+
+
     @FXML
     private TableView<Item> tableItem;
+    @FXML
+    private JFXComboBox<?> cmbCategory;
 
+    @FXML
+    private TableColumn<?, ?> colDescription;
+
+    @FXML
+    private TableColumn<?, ?> colItemCode;
+
+    @FXML
+    private TableColumn<?, ?> colPackSize;
+
+    @FXML
+    private TableColumn<?, ?> colStock;
+
+    @FXML
+    private TableColumn<?, ?> colUnitPrice;
 
     @FXML
     private JFXButton btnReload;
@@ -44,8 +65,7 @@ public class ItemFormController  implements Initializable {
     @FXML
     private JFXButton btnSearch;
 
-    @FXML
-    private JFXComboBox cmbCategory;
+
 
     @FXML
     private JFXTextField txtId;
@@ -117,48 +137,43 @@ public class ItemFormController  implements Initializable {
         txtName.setText(item.getDescription());
         txtPrice.setText(item.getPackSize().toString());
         txtQuantity.setText(item.getUnitPrice().toString());
-        cmbCategory.setValue(item.getStock());
+     //   cmbCategory.setValue(item.getStock());
     }
 
     ArrayList<Item> itemArrayList=new ArrayList<>();
 
 
-    private void loadTable() throws SQLException {
+    private void loadTable()  {
         ItemServiceImpl itemService = new ItemServiceImpl();
         List<Item> all = itemService.getAll();
 
         ArrayList<Item> itemTMArrayList = new ArrayList<>();
         all.forEach(item -> {
-            itemArrayList.add(new Item(
+            itemTMArrayList.add(new Item(
                     item.getItemCode(),
                     item.getDescription(),
                     item.getPackSize(),
                     item.getUnitPrice(),
                     item.getStock()
-
             ));
         });
         tableItem.setItems(FXCollections.observableArrayList(itemTMArrayList));
 
     }
 
-    @SneakyThrows
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cmbCategory.setItems(
-                FXCollections.observableArrayList(
-                        Arrays.asList("Electronics","Furniture","Stationery ","Kitchen","Bags","Fashion","Accessories","Home Appliances")
 
-                )
-        );
         loadTable();
 
     }
+
     void setTextValues(Item item){
         txtId.setText(item.getItemCode());
         txtName.setText(item.getDescription());
         txtPrice.setText(item.getPackSize().toString());
         txtQuantity.setText(item.getUnitPrice().toString());
-        cmbCategory.setValue(item.getStock());
+      //  cmbCategory.setValue(item.getStock());
     }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemServiceImpl implements ItemService {
+
     @Override
     public boolean addItem(Item item) {
         PreparedStatement psTm;
@@ -101,22 +102,40 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getAll() throws SQLException {
-        ResultSet resultSet = CrudUtil.execute("SELECT * FROM item");
-        ArrayList<Item> items = new ArrayList<>();
+    public Item searchById(String id) {
+        return null;
+    }
 
-        while (resultSet.next()) {
-            Item item = new Item();
-            item.setItemCode(resultSet.getString(1));
-            item.setDescription(resultSet.getString(2));
-            item.setPackSize(resultSet.getString(3));
-            item.setUnitPrice(resultSet.getDouble(4));
-            item.setStock(resultSet.getInt(4));
-            items.add(item);
+    @Override
+    public List<Item> getAll() {
+
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROm item");
+
+            ArrayList<Item> itemArrayList = new ArrayList<>();
+
+            while (resultSet.next()){
+                Item itemTM = new Item(
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDouble(4),
+                        resultSet.getInt(5)
+                );
+                itemArrayList.add(itemTM);
+            }
+
+            return  itemArrayList;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return items;
-    }
 
     }
+}
+
+
+
 
 

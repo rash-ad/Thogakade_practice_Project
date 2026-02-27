@@ -1,70 +1,101 @@
 package controller.order;
 
-import com.jfoenix.controls.JFXButton;
+import TM.CartTM;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.util.Duration;
+import service.ServiceFactory;
+import service.SuperService;
+import service.custom.CustomerService;
+import util.ServiceType;
 
-public class OrderFormController {
+import java.net.URL;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
-    @FXML
-    private JFXButton btnAddCustomer;
 
-    @FXML
-    private JFXButton btnDelete;
+public class OrderFormController implements Initializable {
 
-    @FXML
-    private JFXButton btnReload;
+    CustomerService customerService= ServiceFactory.getInstance().getServiceType(ServiceType.CUSTOMER);
 
-    @FXML
-    private JFXButton btnSearch;
-
-    @FXML
-    private TableColumn<?, ?> colAddress;
-
-    @FXML
-    private TableColumn<?, ?> colCity;
-
-    @FXML
-    private TableColumn<?, ?> colDob;
 
     @FXML
-    private TableColumn<?, ?> colId;
-
+    private TextField txtQtyOnHand;
     @FXML
-    private TableColumn<?, ?> colName;
-
+    private TableView tblCartTM;
     @FXML
-    private TableColumn<?, ?> colPostalCode;
-
+    private Label lblDate;
     @FXML
-    private TableColumn<?, ?> colProvince;
-
+    private Label lblTime;
     @FXML
-    private TableColumn<?, ?> colSalary;
-
+    private Label lblDescription;
     @FXML
-    private TableView<?> tblCustomers;
-
+    private TextField txtOrderId;
     @FXML
-    void btnAddCustomerOnAction(ActionEvent event) {
+    private ComboBox cmbCustomerIds;
+    @FXML
+    private ComboBox<?> cmbItemIds;
+    ArrayList<CartTM>cartTMArrayList=new ArrayList<>();
+    @FXML
+//    void btnAddToCartToAction(ActionEvent event){
+//        cartTMArrayList.add(
+//                new CartTM(
+//                        cmbItemIds.getValue().toString(),
+//                        txtOrderId.getText(),
+//                        lblDescription.getText(),
+//
+//
+//        ));
+//
+//        tblCartTM.setItems(FXCollections.observableArrayList(cartTMArrayList));
+//
+//    }
+
+
+
+
+
+
+
+   private void localDateAndTime(){
+       Date date=new Date();
+       SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    lblDate.setText(sdf.format(date));
+       Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+           LocalTime now = LocalTime.now();
+           lblTime.setText(now.getHour() + ":" + now.getMinute() + ":" + now.getSecond());
+       }),
+                new KeyFrame(Duration.seconds(1))
+       );
+
+timeline.setCycleCount(Timeline.INDEFINITE);
+timeline.play();
+   }
+   private  void loadCustomerIds()  {
+       List<String> allCustomerIDs = customerService.getAllCustomerIDs();
+       cmbCustomerIds.setItems(FXCollections.observableArrayList(allCustomerIDs));
+
+   }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+       loadCustomerIds();
+        localDateAndTime();
+        cmbCustomerIds.getSelectionModel().selectedItemProperty().addListener((observable  ,oldvalue,newValue)->
+                System.out.println(newValue)
+        );
+
+
 
     }
-
-    @FXML
-    void btnDeleteOnAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void btnReloadOnAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void btnSearchOnAction(ActionEvent event) {
-
-    }
-
 }
